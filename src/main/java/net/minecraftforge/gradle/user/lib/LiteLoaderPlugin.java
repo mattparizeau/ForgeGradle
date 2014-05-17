@@ -58,6 +58,7 @@ public class LiteLoaderPlugin extends UserLibBasePlugin
             project.getTasks().getByName("setupCIWorkspace").dependsOn(task);
             project.getTasks().getByName("setupDevWorkspace").dependsOn(task);
             project.getTasks().getByName("setupDecompWorkspace").dependsOn(task);
+            project.getTasks().getByName("setupSourceWorkspace").dependsOn(task);
             
             task.doLast(new Action() {
 

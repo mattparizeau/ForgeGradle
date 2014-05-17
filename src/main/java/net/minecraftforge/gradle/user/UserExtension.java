@@ -14,6 +14,7 @@ public class UserExtension extends BaseExtension
     private HashMap<String, Object> replacements = new HashMap<String, Object>();
     private ArrayList<String> includes = new ArrayList<String>();
     private boolean isDecomp = false;
+    private boolean isSource = false;
 
     public UserExtension(UserBasePlugin<? extends UserExtension> plugin)
     {
@@ -57,5 +58,15 @@ public class UserExtension extends BaseExtension
     public void setDecomp()
     {
         this.isDecomp = true;
+    }
+    
+    public boolean isSource()
+    {
+    	return isSource;
+    }
+    
+    public void setSource()
+    {
+    	this.isSource = true;
     }
 }

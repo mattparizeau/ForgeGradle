@@ -268,7 +268,7 @@ public class ReobfTask extends DefaultTask
 
         UserExtension ext = (UserExtension) getProject().getExtensions().getByName(Constants.EXT_NAME_MC);
 
-        if (ext.isDecomp())
+        if (ext.isDecomp() || ext.isSource())
         {
             exc = getExceptor();
             exc.buildSrg(getSrg(), srg);

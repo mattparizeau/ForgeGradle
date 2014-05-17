@@ -142,6 +142,11 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         task.dependsOn("genSrgs", "copyAssets", "extractNatives", "repackMinecraft");
         task.setDescription("DevWorkspace + the deobfuscated Minecraft source linked as a source jar.");
         task.setGroup("ForgeGradle");
+        
+        task = makeTask("setupSourceWorkspace", DefaultTask.class);
+        task.dependsOn("genSrgs", "copyAssets", "extractNatives", "repackMinecraft");
+        task.setDescription("DecompWorkspace + the ability to edit minecraft source.");
+        task.setGroup("ForgeGradle");
         //configureDecompSetup(task);
         
         project.getGradle().getTaskGraph().whenReady(new Closure<Object>(this, null) {
@@ -154,6 +159,12 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                 if (graph.hasTask(path + "setupDecompWorkspace"))
                 {
                     getExtension().setDecomp();
+                    setMinecraftDeps(true, false);
+                }
+                if (graph.hasTask(path + "setupSourceWorkspace"))
+                {
+                    //getExtension().setDecomp();
+                    getExtension().setSource();
                     setMinecraftDeps(true, false);
                 }
                 return null;
@@ -926,7 +937,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         }
         
         // post decompile status thing.
-        configurePostDecomp(getExtension().isDecomp());
+        configurePostDecomp(getExtension().isDecomp(), getExtension().isSource());
     }
     
     /**
@@ -1003,9 +1014,9 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
     /**
      * Configure tasks and stuff after you know if the decomp file exists or not. 
      */
-    protected void configurePostDecomp(boolean decomp)
+    protected void configurePostDecomp(boolean decomp, boolean source)
     {
-        if (decomp)
+        if (decomp || source)
         {
             ((ReobfTask) project.getTasks().getByName("reobf")).setDeobfFile(((ProcessJarTask) project.getTasks().getByName("deobfuscateJar")).getDelayedOutput());
             ((ReobfTask) project.getTasks().getByName("reobf")).setRecompFile(delayedDirtyFile(getSrcDepName(), null, "jar"));
@@ -1016,7 +1027,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             (project.getTasks().getByName("compileApiJava")).dependsOn("deobfBinJar");
         }
         
-        setMinecraftDeps(decomp, false);
+        setMinecraftDeps(decomp || source, false);
     }
     
     protected void setMinecraftDeps(boolean decomp, boolean remove)
